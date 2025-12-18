@@ -1,1 +1,198 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nasumične Riječi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            min-width: 300px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        #wordDisplay {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 30px 0;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .length-selector {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .length-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .length-option input[type="radio"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .length-option label {
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+        }
+        
+        .space-option {
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .space-option input[type="checkbox"] {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+        }
+        
+        .space-option label {
+            cursor: pointer;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nasumične Riječi</h1>
+        
+        <div class="length-selector">
+            <div class="length-option">
+                <input type="radio" id="length2" name="wordLength" value="2">
+                <label for="length2">2 slova</label>
+            </div>
+            <div class="length-option">
+                <input type="radio" id="length3" name="wordLength" value="3" checked>
+                <label for="length3">3 slova</label>
+            </div>
+            <div class="length-option">
+                <input type="radio" id="length4" name="wordLength" value="4">
+                <label for="length4">4 slova</label>
+            </div>
+            <div class="length-option">
+                <input type="radio" id="length5" name="wordLength" value="5">
+                <label for="length5">5 slova</label>
+            </div>
+            <div class="length-option">
+                <input type="radio" id="length6" name="wordLength" value="6">
+                <label for="length6">6 slova</label>
+            </div>
+            <div class="length-option">
+                <input type="radio" id="length7" name="wordLength" value="7">
+                <label for="length7">7 slova</label>
+            </div>
+        </div>
+        
+        <div class="space-option">
+            <input type="checkbox" id="randomSpace" name="randomSpace">
+            <label for="randomSpace">Razmak nakon slučajnog slova</label>
+        </div>
+        
+        <div id="wordDisplay">Klikni za generiranje</div>
+        <button onclick="generateWord()">Generiraj Riječ</button>
+    </div>
 
+    <script>
+        function generateWord() {
+            const consonants = 'bcčćdđfghjklmnprsštvzž';
+            const vowels = 'aeiou';
+            
+            // Dohvati odabranu duljinu riječi
+            const selectedLength = parseInt(document.querySelector('input[name="wordLength"]:checked').value);
+            
+            let word = '';
+            
+            // Generiraj riječ naizmjenično koristeći suglasnike i samoglasnike
+            for (let i = 0; i < selectedLength; i++) {
+                if (i % 2 === 0) {
+                    // Suglasnik
+                    word += consonants[Math.floor(Math.random() * consonants.length)];
+                } else {
+                    // Samoglasnik
+                    word += vowels[Math.floor(Math.random() * vowels.length)];
+                }
+            }
+            
+            // Dodaj razmak
+            let displayWord = word.toUpperCase();
+            const useRandomSpace = document.getElementById('randomSpace').checked;
+            
+            if (displayWord.length > 2) {
+                if (useRandomSpace) {
+                    // Razmak nakon slučajnog slova (osim posljednjeg)
+                    const randomPos = Math.floor(Math.random() * (displayWord.length - 1)) + 1;
+                    displayWord = displayWord.slice(0, randomPos) + ' ' + displayWord.slice(randomPos);
+                } else {
+                    // Razmak nakon drugog slova
+                    displayWord = displayWord.slice(0, 2) + ' ' + displayWord.slice(2);
+                    
+                    // Razmak nakon četvrtog slova (sada 5. pozicija zbog prvog razmaka)
+                    if (displayWord.length > 5) {
+                        displayWord = displayWord.slice(0, 5) + ' ' + displayWord.slice(5);
+                    }
+                }
+            }
+            
+            document.getElementById('wordDisplay').textContent = displayWord;
+        }
+        
+        // Generiraj riječ pri učitavanju stranice
+        window.onload = generateWord;
+    </script>
+</body>
+</html>
